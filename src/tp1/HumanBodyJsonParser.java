@@ -13,24 +13,22 @@ public class HumanBodyJsonParser {
 
     public HumanBodyJsonParser(JsonStructure jsonStructure) {
         this.jsonStructure = jsonStructure;
-        humanBody = new HumanBody("", "");
-
     }
 
-    public HumanBody ParseJson() {
+    public HumanBody parseJson() {
         
         JsonObject object = (JsonObject) jsonStructure;
         humanBody = new HumanBody(
             object.getString("bodyName"),
-            object.getString("bodyId"));
+            object.getString("bodyID"));
 
         JsonArray systems = (JsonArray) object.get("Systems");
         for (JsonValue val : systems)
-            humanBody.Systems.add(HumanBody.CreateSystemFromJsonObject(val));
+            humanBody.Systems.add(HumanBody.createSystemFromJsonObject(val));
         
         JsonArray organs = (JsonArray) object.get("Organs");
         for (JsonValue val : organs)
-            humanBody.Organs.add(HumanBody.CreateOrganFromJsonObject(val));
+            humanBody.Organs.add(HumanBody.createOrganFromJsonObject(val));
         
         return humanBody;
     }

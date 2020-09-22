@@ -35,12 +35,12 @@ public class Connection {
         return connectionJson;
     }
 
-	public static String createToFromJsonObject(JsonValue tree) {
+	public static int createToFromJsonObject(JsonValue tree) {
         JsonObject object = (JsonObject) tree;
-        return object.getString("id");
+        return object.getInt("id");
 	}
 
-	public Node CreateXmlObject(Document doc) {
+	public Node createXmlObject(Document doc) {
 		Element connection = doc.createElement("Connection");
         connection.setAttribute("id", id);
 

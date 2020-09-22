@@ -18,7 +18,7 @@ public class Organ {
         SystemId = systemId;
     }
 
-    public JsonObjectBuilder CreateJsonObject() {
+    public JsonObjectBuilder createJsonObject() {
         JsonObjectBuilder systemJson = Json.createObjectBuilder();
         systemJson.add("name", Name);
         systemJson.add("id", Id);
@@ -26,7 +26,7 @@ public class Organ {
         return systemJson;
     }
 
-	public Node CreateXmlObject(Document doc) {
+	public Node createXmlObject(Document doc) {
 		Element system = doc.createElement("Organ");
         system.setAttribute("name", Name);
         system.setAttribute("id", Id);

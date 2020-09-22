@@ -62,13 +62,13 @@ public class Devoir1B {
 
         HumanBodyJsonParser parser = new HumanBodyJsonParser(jsonStruct);
 
-        HumanBody humanBody = parser.ParseJson();
+        HumanBody humanBody = parser.parseJson();
 
         DocumentBuilderFactory f = DocumentBuilderFactory.newInstance();
         f.setValidating(true);
         Document document = f.newDocumentBuilder().newDocument();
 
-        humanBody.CreateDocument(document);
+        humanBody.createDocument(document);
 
         FileOutputStream output = new FileOutputStream(nomFichierXML);
         PrintStream out = new PrintStream(output);

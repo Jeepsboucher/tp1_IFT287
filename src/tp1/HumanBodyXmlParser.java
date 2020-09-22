@@ -58,7 +58,7 @@ public class HumanBodyXmlParser extends DefaultHandler {
                 break;
             case "to":
                 HumanBody.Systems.get(systemCount).Flows.get(flowCount).Connections.get(connectionCount).toList.add(
-                        attrs.getValue("id")
+                        Integer.parseInt(attrs.getValue("id"))
                     );
                 break;
             case "Organ":
@@ -67,150 +67,22 @@ public class HumanBodyXmlParser extends DefaultHandler {
                 );
                 break;
             default:
-                AddingConnectible(qName, attrs);
+                addingConnectible(qName, attrs);
                 break;
         }
     }
     
-    private void AddingConnectible(String qName, Attributes attrs) {
+    private void addingConnectible(String qName, Attributes attrs) {
+        ConnectibleType type = ConnectibleType.valueOf(qName);
+        String name = attrs.getValue("name");
+        String id = attrs.getValue("id");
+        Double volume = attrs.getValue("volume") == null ? null : Double.parseDouble(attrs.getValue("volume"));
         Double length = attrs.getValue("length") == null ? null : Double.parseDouble(attrs.getValue("length"));
-        Double endRadius = attrs.getValue("endRadius") == null ? 0 : Double.parseDouble(attrs.getValue("endRadius"));
-        switch (qName) {
-            case "Atrium":
-                HumanBody.Systems.get(systemCount).Flows.get(flowCount).Connectibles.add(
-                    new Atrium(attrs.getValue("name"), 
-                        attrs.getValue("id"), 
-                        Double.parseDouble(attrs.getValue("volume")))
-                );
-                break;
-            case "Ventricle":
-                HumanBody.Systems.get(systemCount).Flows.get(flowCount).Connectibles.add(
-                    new Ventricle(attrs.getValue("name"), 
-                        attrs.getValue("id"), 
-                        Double.parseDouble(attrs.getValue("volume")))
-                );
-            break;
-            case "Artery":
-                HumanBody.Systems.get(systemCount).Flows.get(flowCount).Connectibles.add(
-                    new Artery(attrs.getValue("name"),
-                        attrs.getValue("id"),
-                        Double.parseDouble(attrs.getValue("startRadius")),
-                        endRadius,
-                        length)
-                );
-                break;
-            case "Vein":
-                HumanBody.Systems.get(systemCount).Flows.get(flowCount).Connectibles.add(
-                    new Vein(attrs.getValue("name"),
-                        attrs.getValue("id"),
-                        Double.parseDouble(attrs.getValue("startRadius")),
-                        endRadius,
-                        length)
-                );
-                break;
-            case "Capillaries":
-                HumanBody.Systems.get(systemCount).Flows.get(flowCount).Connectibles.add(
-                    new Capillaries(attrs.getValue("name"),
-                        attrs.getValue("id"),
-                        Double.parseDouble(attrs.getValue("volume")),
-                        length)
-                );
-            break;
-            case "Nose":
-                HumanBody.Systems.get(systemCount).Flows.get(flowCount).Connectibles.add(
-                    new Nose(attrs.getValue("name"),
-                        attrs.getValue("id"))
-                );
-                break;
-            case "AirConnectible":
-                HumanBody.Systems.get(systemCount).Flows.get(flowCount).Connectibles.add(
-                    new AirConnectible(attrs.getValue("name"),
-                        attrs.getValue("id"),
-                        Double.parseDouble(attrs.getValue("startRadius")),
-                        endRadius,
-                        length)
-                );
-                break;
-            case "Alveoli":
-                HumanBody.Systems.get(systemCount).Flows.get(flowCount).Connectibles.add(
-                    new Alveoli(attrs.getValue("name"),
-                        attrs.getValue("id"),
-                        Double.parseDouble(attrs.getValue("volume")))
-                );
-                break;
-            case "DigestiveTract":
-                HumanBody.Systems.get(systemCount).Flows.get(flowCount).Connectibles.add(
-                    new DigestiveTract(attrs.getValue("name"),
-                        attrs.getValue("id"),
-                        Double.parseDouble(attrs.getValue("volume")),
-                        length)
-                );
-            break;
-            case "StomachTract":
-                HumanBody.Systems.get(systemCount).Flows.get(flowCount).Connectibles.add(
-                    new StomachTract(attrs.getValue("name"),
-                        attrs.getValue("id"),
-                        Double.parseDouble(attrs.getValue("volume")),
-                        length)
-                );
-                break;
-            case "DuodenumTract":
-                HumanBody.Systems.get(systemCount).Flows.get(flowCount).Connectibles.add(
-                    new DuodenumTract(attrs.getValue("name"),
-                        attrs.getValue("id"),
-                        Double.parseDouble(attrs.getValue("volume")),
-                        length)
-                );
-                break;
-            case "RectumTract":
-                HumanBody.Systems.get(systemCount).Flows.get(flowCount).Connectibles.add(
-                    new RectumTract(attrs.getValue("name"),
-                        attrs.getValue("id"),
-                        Double.parseDouble(attrs.getValue("volume")),
-                        length)
-                );
-            break;
-            case "BiDuct":
-                HumanBody.Systems.get(systemCount).Flows.get(flowCount).Connectibles.add(
-                    new BiDuct(attrs.getValue("name"),
-                        attrs.getValue("id"))
-                );
-                break;
-            case "Duct":
-                HumanBody.Systems.get(systemCount).Flows.get(flowCount).Connectibles.add(
-                    new Duct(attrs.getValue("name"),
-                        attrs.getValue("id"))
-                );
-                break;
-            case "DuctOverflowableJunction":
-                HumanBody.Systems.get(systemCount).Flows.get(flowCount).Connectibles.add(
-                    new DuctOverflowableJunction(attrs.getValue("name"),
-                        attrs.getValue("id"))
-                );
-            break;
-            case "DeversingDuct":
-                HumanBody.Systems.get(systemCount).Flows.get(flowCount).Connectibles.add(
-                    new DeversingDuct(attrs.getValue("name"),
-                        attrs.getValue("id"))
-                );
-                break;
-            case "InnerGallbladder":
-                HumanBody.Systems.get(systemCount).Flows.get(flowCount).Connectibles.add(
-                    new InnerGallbladder(attrs.getValue("name"),
-                        attrs.getValue("id"))
-                );
-                break;
-            case "SalivaryDuct":
-                HumanBody.Systems.get(systemCount).Flows.get(flowCount).Connectibles.add(
-                    new SalivaryDuct(attrs.getValue("name"),
-                        attrs.getValue("id"),
-                        Double.parseDouble(attrs.getValue("volume")),
-                        length)
-                );
-                break; 
-            default:
-                break;
-        }
+        Double startRadius = attrs.getValue("startRadius") == null ? null : Double.parseDouble(attrs.getValue("startRadius"));
+        Double endRadius = attrs.getValue("endRadius") == null ? null : Double.parseDouble(attrs.getValue("endRadius"));
+        HumanBody.Systems.get(systemCount).Flows.get(flowCount).Connectibles.add(
+            new Connectible(type, name, id, volume, length, startRadius, endRadius)
+        );
     }
 
 	public void endElement(String namespaceURI, String lName, String qName)

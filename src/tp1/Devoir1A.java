@@ -65,7 +65,7 @@ public class Devoir1A {
         HumanBodyXmlParser handler = new HumanBodyXmlParser();
         parser.parse(new File(nomFichierXML), handler);
 
-        JsonObject body = handler.GetHumanBody().CreateJsonObject();
+        JsonObject body = handler.GetHumanBody().createJsonObject();
 
         StringWriter stWriter = new StringWriter();
         Map<String, Object> config = new HashMap<String, Object>(1);
