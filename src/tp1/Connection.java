@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.json.Json;
+import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonNumber;
 import javax.json.JsonValue;
 
 import org.w3c.dom.Document;
@@ -14,16 +16,29 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 public class Connection {
-    public String id;
+    private String id;
 
-    public List<Integer> toList;
+    private List<Integer> toList;
 
-    public Connection(String id) {
+    private Connection(String id) {
         this.id = id;
         toList = new ArrayList<>();
     }
 
-    public JsonObjectBuilder createJsonObject() {
+	public static Connection fromJson(JsonValue tree) {
+        JsonObject object = (JsonObject) tree;
+        Connection connection = new Connection(object.getString("id"));
+
+        JsonArray toListJson = object.getJsonArray("to");
+        for (JsonValue val : toListJson) {
+            JsonNumber to = (JsonNumber) val;
+            connection.toList.add(to.intValue());
+        }
+
+        return connection;
+	}
+
+    public JsonObjectBuilder toJson() {
         JsonObjectBuilder connectionJson = Json.createObjectBuilder();
         connectionJson.add("id", id);
 
@@ -35,12 +50,7 @@ public class Connection {
         return connectionJson;
     }
 
-	public static int createToFromJsonObject(JsonValue tree) {
-        JsonObject object = (JsonObject) tree;
-        return object.getInt("id");
-	}
-
-	public Node createXmlObject(Document doc) {
+	public Node toXml(Document doc) {
 		Element connection = doc.createElement("Connection");
         connection.setAttribute("id", id);
 

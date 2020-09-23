@@ -6,9 +6,10 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
+import java.util.stream.*;
 
 public class HumanBodyXmlParser extends DefaultHandler {
-    public HumanBody HumanBody;
+    private HumanBody HumanBody;
 
     private Integer systemCount = 0;
     private Integer flowCount = 0;
@@ -38,12 +39,12 @@ public class HumanBodyXmlParser extends DefaultHandler {
             case "Systems":
                 break;
             case "System":
-                HumanBody.Systems.add(
+                HumanBody.systems.add(
                     new tp1.System(attrs.getValue("name"),attrs.getValue("id"),attrs.getValue("type"))
                 );
                 break;
             case "Flow":
-                HumanBody.Systems.get(systemCount).Flows.add(
+                HumanBody.systems.get(systemCount).flows.add(
                     new Flow(attrs.getValue("name"),attrs.getValue("id"))
                 );
                 break;
@@ -52,17 +53,17 @@ public class HumanBodyXmlParser extends DefaultHandler {
             case "Connections":
                 break;
             case "Connection":
-                HumanBody.Systems.get(systemCount).Flows.get(flowCount).Connections.add(
+                HumanBody.systems.get(systemCount).flows.get(flowCount).Connections.add(
                     new Connection(attrs.getValue("id"))
                 );
                 break;
             case "to":
-                HumanBody.Systems.get(systemCount).Flows.get(flowCount).Connections.get(connectionCount).toList.add(
+                HumanBody.systems.get(systemCount).flows.get(flowCount).Connections.get(connectionCount).toList.add(
                         Integer.parseInt(attrs.getValue("id"))
                     );
                 break;
             case "Organ":
-                HumanBody.Organs.add(
+                HumanBody.organs.add(
                     new Organ(attrs.getValue("name"),attrs.getValue("id"),attrs.getValue("systemID"))
                 );
                 break;
@@ -73,14 +74,15 @@ public class HumanBodyXmlParser extends DefaultHandler {
     }
     
     private void addingConnectible(String qName, Attributes attrs) {
-        ConnectibleType type = ConnectibleType.valueOf(qName);
+        ConnectibleType type = Stream.of(ConnectibleType.values()).filter(connectibleType -> connectibleType.getTypeName().equals(qName))
+                                                                  .findFirst().get();
         String name = attrs.getValue("name");
         String id = attrs.getValue("id");
         Double volume = attrs.getValue("volume") == null ? null : Double.parseDouble(attrs.getValue("volume"));
         Double length = attrs.getValue("length") == null ? null : Double.parseDouble(attrs.getValue("length"));
         Double startRadius = attrs.getValue("startRadius") == null ? null : Double.parseDouble(attrs.getValue("startRadius"));
         Double endRadius = attrs.getValue("endRadius") == null ? null : Double.parseDouble(attrs.getValue("endRadius"));
-        HumanBody.Systems.get(systemCount).Flows.get(flowCount).Connectibles.add(
+        HumanBody.systems.get(systemCount).flows.get(flowCount).Connectibles.add(
             new Connectible(type, name, id, volume, length, startRadius, endRadius)
         );
     }

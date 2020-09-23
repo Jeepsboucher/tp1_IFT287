@@ -15,61 +15,57 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 public class System {
-    public String Name;
-    public String Id;
-    public String Type;
+    private String name;
+    private String id;
+    private String type;
 
-    public List<Flow> Flows;
+    private List<Flow> flows;
 
-    public System(String name, String id, String type) {
-        Name = name;
-        Id = id;
-        Type = type;
+    private System(String name, String id, String type) {
+        this.name = name;
+        this.id = id;
+        this.type = type;
 
-        Flows = new ArrayList<>();
+        flows = new ArrayList<>();
     }
 
-    public JsonObjectBuilder createJsonObject() {
+    public static System fromJson(JsonValue tree) {
+        JsonObject object = (JsonObject) tree;
+        System system = new System(
+            object.getString("name"),
+            object.getString("id"),
+            object.getString("type")
+        );
+
+        JsonArray flows = (JsonArray) object.get("Flows");
+        for (JsonValue val : flows) {
+            system.flows.add(Flow.fromJson(val));
+        }
+
+        return system;
+    }
+
+    public JsonObjectBuilder toJson() {
         JsonObjectBuilder systemJson = Json.createObjectBuilder();
-        systemJson.add("name", Name);
-        systemJson.add("id", Id);
-        systemJson.add("type", Type);
+        systemJson.add("name", name);
+        systemJson.add("id", id);
+        systemJson.add("type", type);
         JsonArrayBuilder jsonFlows = Json.createArrayBuilder();
-        for (Flow flow : Flows) {
-            jsonFlows.add(flow.createJsonObject());
+        for (Flow flow : flows) {
+            jsonFlows.add(flow.toJson());
         }
         systemJson.add("Flows", jsonFlows);
         return systemJson;
     }
 
-	public static Flow createFlowFromJsonObject(JsonValue tree) {
-        JsonObject object = (JsonObject) tree;
-        Flow flow = new Flow(
-            object.getString("name"),
-            object.getString("id"));
-
-        JsonArray connectibles = (JsonArray) object.get("Connectibles");
-        for (JsonValue val : connectibles) {
-            Connectible connectible = Flow.createConnectibleFromJsonObject(val);
-            if(connectible != null)
-                flow.Connectibles.add(Flow.createConnectibleFromJsonObject(val));
-        }
-
-        JsonArray connections = (JsonArray) object.get("Connections");
-        for (JsonValue val : connections)
-            flow.Connections.add(Flow.createConnectionFromJsonObject(val));
-
-        return flow;
-	}
-
-	public Node createXmlObject(Document doc) {
+	public Node toXml(Document doc) {
 		Element system = doc.createElement("System");
-        system.setAttribute("name", Name);
-        system.setAttribute("id", Id);
-        system.setAttribute("type", Type);
+        system.setAttribute("name", name);
+        system.setAttribute("id", id);
+        system.setAttribute("type", type);
 
-        for (Flow flow : Flows) {
-            system.appendChild(flow.createXmlObject(doc));
+        for (Flow flow : flows) {
+            system.appendChild(flow.toXml(doc));
         }
 
         return system;

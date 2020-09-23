@@ -1,6 +1,6 @@
 // Travail fait par :
-//   Jean-Philippe Boucher - 19125046
-//   NomEquipier2 - Matricule
+//   Jean-Philippe Boucher - 19 125 046
+//   Charles Lachance - 17 093 137
 
 package tp1;
 
@@ -65,7 +65,7 @@ public class Devoir1A {
         HumanBodyXmlParser handler = new HumanBodyXmlParser();
         parser.parse(new File(nomFichierXML), handler);
 
-        JsonObject body = handler.GetHumanBody().createJsonObject();
+        JsonObject body = handler.GetHumanBody().toJson();
 
         StringWriter stWriter = new StringWriter();
         Map<String, Object> config = new HashMap<String, Object>(1);

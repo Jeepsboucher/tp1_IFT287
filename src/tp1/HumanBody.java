@@ -13,82 +13,79 @@ import javax.json.JsonValue;
 import org.w3c.dom.*;
 
 public class HumanBody {
-    public String BodyName;
-    public String BodyId;
+    private String bodyName;
+    private String bodyId;
 
-    public List<System> Systems;
-    public List<Organ> Organs;
+    private List<System> systems;
+    private List<Organ> organs;
 
-    public HumanBody(String bodyName, String bodyId) {
-        BodyName = bodyName;
-        BodyId = bodyId;
+    private HumanBody(String bodyName, String bodyId) {
+        this.bodyName = bodyName;
+        this.bodyId = bodyId;
 
-        Systems = new ArrayList<>();
-        Organs = new ArrayList<>();
+        systems = new ArrayList<>();
+        organs = new ArrayList<>();
     }
 
-    public JsonObject createJsonObject() {
+    public static HumanBody fromJson(JsonValue tree) {
+        JsonObject object = (JsonObject) tree;
+        HumanBody humanBody = new HumanBody(
+            object.getString("bodyName"),
+            object.getString("bodyID")
+        );
+
+        JsonArray systems = (JsonArray) object.get("Systems");
+        for (JsonValue val : systems) {
+            humanBody.systems.add(System.fromJson(val));
+        }
+        
+        JsonArray organs = (JsonArray) object.get("Organs");
+        for (JsonValue val : organs) {
+            humanBody.organs.add(Organ.fromJson(val));
+        }
+        
+        return humanBody;
+    }
+
+    public JsonObject toJson() {
         JsonObjectBuilder humanBodyJson = Json.createObjectBuilder();
-        humanBodyJson.add("bodyName", BodyName);
-        humanBodyJson.add("bodyID", BodyId);
+        humanBodyJson.add("bodyName", bodyName);
+        humanBodyJson.add("bodyID", bodyId);
+
         JsonArrayBuilder jsonSystems = Json.createArrayBuilder();
-        for (System system : Systems) {
-            jsonSystems.add(system.createJsonObject());
+        for (System system : systems) {
+            jsonSystems.add(system.toJson());
         }
         humanBodyJson.add("Systems", jsonSystems);
 
         JsonArrayBuilder jsonOrgans = Json.createArrayBuilder();
-        for (Organ organ : Organs) {
-            jsonOrgans.add(organ.createJsonObject());
+        for (Organ organ : organs) {
+            jsonOrgans.add(organ.toJson());
         }
         humanBodyJson.add("Organs", jsonOrgans);
 
         return humanBodyJson.build();
     }
 
-    public Document createDocument(Document doc) {
+    public Document toXml(Document doc) {
         Element root = doc.createElement("MainBody");
-        root.setAttribute("bodyID", BodyId);
-        root.setAttribute("bodyName", BodyName);
+        root.setAttribute("bodyID", bodyId);
+        root.setAttribute("bodyName", bodyName);
 
         Element systems = doc.createElement("Systems");
-        for (System system : Systems) {
-            systems.appendChild(system.createXmlObject(doc));
+        for (System system : systems) {
+            systems.appendChild(system.toXml(doc));
         }
         root.appendChild(systems);
 
         Element organs = doc.createElement("Organs");
-        for (Organ organ : Organs) {
-            organs.appendChild(organ.createXmlObject(doc));
+        for (Organ organ : organs) {
+            organs.appendChild(organ.toXml(doc));
         }
         root.appendChild(organs);
 
         doc.appendChild(root);
 
         return doc;
-    }
-
-    public static System createSystemFromJsonObject(JsonValue tree) {
-        JsonObject object = (JsonObject) tree;
-        System system = new System(
-            object.getString("name"),
-            object.getString("id"),
-            object.getString("type"));
-
-        JsonArray flows = (JsonArray) object.get("Flows");
-        for (JsonValue val : flows)
-            system.Flows.add(System.createFlowFromJsonObject(val));
-
-        return system;
-    }
-
-    public static Organ createOrganFromJsonObject(JsonValue tree) {
-        JsonObject object = (JsonObject) tree;
-        Organ organ = new Organ(
-            object.getString("name"),
-            object.getString("id"),
-            object.getString("systemID"));
-
-        return organ;
     }
 }
