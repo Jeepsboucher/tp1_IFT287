@@ -1,12 +1,11 @@
 // Travail fait par :
-//   Jean-Philippe Boucher - 19125046
-//   NomEquipier2 - Matricule
+//   Jean-Philippe Boucher - 19 125 046
+//   Charles Lachance - 17 093 137
 
 package tp1;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.System;
 import java.util.HashMap;
@@ -17,11 +16,8 @@ import javax.json.JsonObject;
 import javax.json.JsonWriter;
 import javax.json.JsonWriterFactory;
 import javax.json.stream.JsonGenerator;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-
-import org.xml.sax.SAXException;
 
 /**
  * Fichier de base pour le Devoir1A du cours IFT287
@@ -43,7 +39,7 @@ import org.xml.sax.SAXException;
  */
 public class Devoir1A {
 
-    public static void main(String[] args) throws ParserConfigurationException, SAXException, IOException
+    public static void main(String[] args)
     {
         System.out.println("Args:" + args.length);
         if (args.length < 2)
@@ -61,24 +57,33 @@ public class Devoir1A {
 
         SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setValidating(true);
-        SAXParser parser = factory.newSAXParser();
-        HumanBodyXmlParser handler = new HumanBodyXmlParser();
-        parser.parse(new File(nomFichierXML), handler);
 
-        JsonObject body = handler.GetHumanBody().CreateJsonObject();
+        try {
+            SAXParser parser = factory.newSAXParser();
+            HumanBodyXmlParser handler = new HumanBodyXmlParser();
 
-        StringWriter stWriter = new StringWriter();
-        Map<String, Object> config = new HashMap<String, Object>(1);
-        config.put(JsonGenerator.PRETTY_PRINTING, true);
-        JsonWriterFactory f = Json.createWriterFactory(config);
-        JsonWriter jsonWriter = f.createWriter(stWriter);
-        jsonWriter.writeObject(body);
-        jsonWriter.close();
+            parser.parse(new File(nomFichierXML), handler);
+            
+            JsonObject body = handler.getHumanBody().toJson();
 
-        String json = stWriter.toString();
-        FileWriter writer = new FileWriter(nomFichierJSON);
-        writer.write(json);
-        writer.close();
+            Map<String, Object> config = new HashMap<String, Object>(1);
+            config.put(JsonGenerator.PRETTY_PRINTING, true);
+
+            JsonWriterFactory f = Json.createWriterFactory(config);
+            StringWriter stWriter = new StringWriter();
+            JsonWriter jsonWriter = f.createWriter(stWriter);
+
+            jsonWriter.writeObject(body);
+            jsonWriter.close();
+
+            String json = stWriter.toString();
+            FileWriter writer = new FileWriter(nomFichierJSON);
+            writer.write(json);
+            writer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         System.out.println("Conversion terminee.");
     }
 

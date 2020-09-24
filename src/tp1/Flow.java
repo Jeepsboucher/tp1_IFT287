@@ -1,6 +1,7 @@
 package tp1;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -12,180 +13,167 @@ import javax.json.JsonValue;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
 
-public class Flow {
-    public String Name;
-    public String Id;
+public class Flow implements XMLSerializable {
+    private String name;
+    private int id;
 
-    public ArrayList<Connectible> Connectibles;
-    public ArrayList<Connection> Connections;
+    private List<Connectible> connectibles;
+    private List<Connection> connections;
 
-    public Flow(String name, String id) {
-        Name = name;
-        Id = id;
-
-        Connectibles = new ArrayList<Connectible>();
-        Connections = new ArrayList<Connection>();
+    public Flow(String name, int id) {
+        this.name = name;
+        this.id = id;
     }
 
-    public JsonObjectBuilder CreateJsonObject() {
+    public static Flow fromJson(JsonValue tree) {
+        JsonObject object = (JsonObject) tree;
+        Flow flow = new Flow(object.getString("name"), object.getInt("id"));
+
+
+        flow.connectibles = new ArrayList<>();
+        JsonArray connectiblesJson = (JsonArray) object.get("Connectibles");
+        for (JsonValue val : connectiblesJson) {
+            flow.connectibles.add(Connectible.fromJson(val));
+        }
+
+        flow.connections = new ArrayList<>();
+        JsonArray connectionsJson = (JsonArray) object.get("Connections");
+        for (JsonValue val : connectionsJson) {
+            flow.connections.add(Connection.fromJson(val));
+        }
+
+        return flow;
+    }
+
+    public JsonObjectBuilder toJson() {
         JsonObjectBuilder flowJson = Json.createObjectBuilder();
-        flowJson.add("name", Name);
-        flowJson.add("id", Id);
+        flowJson.add("name", name);
+        flowJson.add("id", id);
 
         JsonArrayBuilder jsonConnectibles = Json.createArrayBuilder();
-        for (Connectible connectible : Connectibles) {
-            jsonConnectibles.add(connectible.createJsonObject());
+        for (Connectible connectible : connectibles) {
+            jsonConnectibles.add(connectible.toJson());
         }
         flowJson.add("Connectibles", jsonConnectibles);
 
         JsonArrayBuilder jsonConnections = Json.createArrayBuilder();
-        for (Connection connection : Connections) {
-            jsonConnections.add(connection.createJsonObject());
+        for (Connection connection : connections) {
+            jsonConnections.add(connection.toJson());
         }
         flowJson.add("Connections", jsonConnections);
+
         return flowJson;
     }
 
-	public static Connectible CreateConnectibleFromJsonObject(JsonValue tree) {
-        JsonObject object = (JsonObject) tree;
-        String type = object.getString("type");
-        Double length = object.getJsonNumber("length") == null ? null : object.getJsonNumber("length").doubleValue();
-        Double volume = object.getJsonNumber("volume") == null ? null : object.getJsonNumber("volume").doubleValue();
-        Double startRadius = object.getJsonNumber("startRadius") == null ? null : object.getJsonNumber("startRadius").doubleValue();
-        Double endRadius = object.getJsonNumber("endRadius") == null ? null : object.getJsonNumber("endRadius").doubleValue();
-        return new Connectible()
-        Connectible toReturn = null;
-        switch (type) {
-            case "Atrium":
-                toReturn = new Atrium(object.getString("name"), 
-                    object.getString("id"), 
-                    object.getJsonNumber("volume").doubleValue());
-                break;
-            case "Ventricle":
-                toReturn = new Ventricle(object.getString("name"), 
-                    object.getString("id"), 
-                    object.getJsonNumber("volume").doubleValue());
-                break;
-            case "Artery":
-                toReturn = new Artery(object.getString("name"), 
-                    object.getString("id"), 
-                    object.getJsonNumber("startRadius").doubleValue(),
-                    endRadius,
-                    length);
-                break;
-            case "Vein":
-                toReturn = new Vein(object.getString("name"), 
-                    object.getString("id"), 
-                    object.getJsonNumber("startRadius").doubleValue(),
-                    endRadius,
-                    length);
-                break;
-            case "Capillaries":
-                toReturn = new Capillaries(object.getString("name"), 
-                    object.getString("id"), 
-                    object.getJsonNumber("volume").doubleValue(),
-                    length);
-                break;
-            case "Nose":
-                toReturn = new Nose(object.getString("name"), 
-                    object.getString("id"));
-                break;
-            case "AirConnectible":
-                toReturn = new AirConnectible(object.getString("name"), 
-                    object.getString("id"), 
-                    object.getJsonNumber("startRadius").doubleValue(),
-                    endRadius,
-                    length);
-                break;
-            case "Alveoli":
-                toReturn = new Alveoli(object.getString("name"), 
-                    object.getString("id"), 
-                    object.getJsonNumber("volume").doubleValue());
-                break;
-            case "DigestiveTract":
-                toReturn = new DigestiveTract(object.getString("name"), 
-                    object.getString("id"), 
-                    object.getJsonNumber("volume").doubleValue(),
-                    length);
-                break;
-            case "StomachTract":
-                toReturn = new StomachTract(object.getString("name"), 
-                    object.getString("id"), 
-                    object.getJsonNumber("volume").doubleValue(),
-                    length);
-                break;
-            case "DuodenumTract":
-                toReturn = new DuodenumTract(object.getString("name"), 
-                    object.getString("id"), 
-                    object.getJsonNumber("volume").doubleValue(),
-                    length);
-                break;
-            case "RectumTract":
-                toReturn = new RectumTract(object.getString("name"), 
-                    object.getString("id"), 
-                    object.getJsonNumber("volume").doubleValue(),
-                    length);
-                break;
-            case "BiDuct":
-                toReturn = new BiDuct(object.getString("name"), 
-                object.getString("id"));
-                break;
-            case "Duct":
-                toReturn = new Duct(object.getString("name"), 
-                object.getString("id"));
-                break;
-            case "DuctOverflowableJunction":
-                toReturn = new DuctOverflowableJunction(object.getString("name"), 
-                    object.getString("id"));
-            break;
-            case "DeversingDuct":
-                toReturn = new DeversingDuct(object.getString("name"), 
-                    object.getString("id"));
-                break;
-            case "InnerGallbladder":
-                toReturn = new InnerGallbladder(object.getString("name"), 
-                    object.getString("id"));
-                break;
-            case "SalivaryDuct":
-                toReturn = new SalivaryDuct(object.getString("name"), 
-                    object.getString("id"), 
-                    object.getJsonNumber("volume").doubleValue(),
-                    length);
-                break; 
-        }
-        return toReturn;
-	}
-
-	public static Connection CreateConnectionFromJsonObject(JsonValue tree) {
-        JsonObject object = (JsonObject) tree;
-        Connection connection = new Connection(
-            object.getString("id"));
-
-        JsonArray to = (JsonArray) object.get("to");
-        for (JsonValue val : to)
-            connection.toList.add(Connection.createToFromJsonObject(val));
-
-        return connection;
-	}
-
-	public Node CreateXmlObject(Document doc) {
-		Element system = doc.createElement("Flow");
-        system.setAttribute("name", Name);
-        system.setAttribute("id", Id);
+    public Node toXml(Document doc) {
+        Element system = doc.createElement("Flow");
+        system.setAttribute("name", name);
+        system.setAttribute("id", Integer.toString(id));
 
         Element connectible = doc.createElement("Connectible");
-        for (Connectible c : Connectibles) {
-            connectible.appendChild(c.createXmlObject(doc));
+        for (Connectible c : connectibles) {
+            connectible.appendChild(c.toXml(doc));
         }
         system.appendChild(connectible);
 
-        Element connections = doc.createElement("Connections");
-        for (Connection c : Connections) {
-            connections.appendChild(c.CreateXmlObject(doc));
+        Element connectionsXElement = doc.createElement("Connections");
+        for (Connection c : connections) {
+            connectionsXElement.appendChild(c.toXml(doc));
         }
-        system.appendChild(connections);
+        system.appendChild(connectionsXElement);
 
         return system;
-	}
+    }
+
+    @Override
+    public XMLSerializable addElement(String qName, Attributes attrs) throws SAXException {
+        XMLSerializable child = null;
+        int id;
+
+        switch (qName) {
+            case "Connectible":
+                if (connectibles != null) {
+                    throw new SAXException("Flow can only contain one Connectible child.");
+                }
+
+                connectibles = new ArrayList<>();
+                break;
+            case "Connections":
+                if (connections != null) {
+                    throw new SAXException("Flow can only contain one Connections child.");
+                }
+
+                connections = new ArrayList<>();
+                break;
+            case "Connection":
+                if (connections == null) {
+                    throw new SAXException("Flow should be child of a Connection element.");
+                }
+
+                if (attrs == null || attrs.getLength() != 1 || attrs.getValue("id") == null) {
+                    throw new SAXException("Connection must have only an id.");
+                }
+
+                id = Integer.parseInt(attrs.getValue("id"));
+
+                Connection connection = new Connection(id);
+                connections.add(connection);
+
+                child = connection;
+                break;
+            default:
+                ConnectibleType type = ConnectibleType.fromString(qName);
+                if (type == null) {
+                    throw new SAXException("Unknow tag : " + qName);
+                }
+                if (connectibles == null) {
+                    throw new SAXException("A " + qName + " must appear in a connectibles list (Connectible).");
+                }
+
+                if (attrs == null || attrs.getLength() < 2 || attrs.getLength() > 6 || attrs.getValue("name") == null
+                        || attrs.getValue("id") == null) {
+                    throw new SAXException("Every connectible must have at least a name and an id.");
+                }
+
+                String name = attrs.getValue("name");
+                id = Integer.parseInt(attrs.getValue("id"));
+
+                Double startRadius = null;
+                String startRadiusStr = attrs.getValue("startRadius");
+                if (startRadiusStr != null) {
+                    startRadius = Double.parseDouble(startRadiusStr);
+                }
+
+                Double endRadius = null;
+                String endRadiusStr = attrs.getValue("endRadius");
+                if (endRadiusStr != null) {
+                    endRadius = Double.parseDouble(endRadiusStr);
+                }
+
+                Double length = null;
+                String lengthStr = attrs.getValue("length");
+                if (lengthStr != null) {
+                    length = Double.parseDouble(lengthStr);
+                }
+
+                Double volume = null;
+                String volumeStr = attrs.getValue("volume");
+                if (volumeStr != null) {
+                    volume = Double.parseDouble(volumeStr);
+                }
+
+                Connectible connectible = new Connectible(type, name, id, volume, length, startRadius, endRadius);
+                connectibles.add(connectible);
+                break;
+        }
+        return child;
+    }
+
+    @Override
+    public String getTagName(String tag) {
+        return "Flow";
+    }
 }

@@ -1,23 +1,27 @@
 package tp1;
 
 import javax.json.Json;
+import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
 
-public class Connectible {
+public class Connectible implements XMLSerializable {
     private ConnectibleType type;
     private String name;
-    private String id;
+    private int id;
     private Double volume;
     private Double length;
     private Double startRadius;
     private Double endRadius;
-    
-    public Connectible(ConnectibleType type, String name, String id, Double volume, Double length, Double startRadius,
-                        Double endRadius) {
+
+    public Connectible(ConnectibleType type, String name, int id, Double volume, Double length, Double startRadius,
+            Double endRadius) {
         this.type = type;
         this.name = name;
         this.id = id;
@@ -27,7 +31,21 @@ public class Connectible {
         this.endRadius = endRadius;
     }
 
-    public JsonObjectBuilder createJsonObject() {
+    public static Connectible fromJson(JsonValue tree) {
+        JsonObject object = (JsonObject) tree;
+        String typeName = object.getString("type");
+        ConnectibleType type = ConnectibleType.fromString(typeName);
+        String name = object.getString("name");
+        Integer id = object.getInt("id");
+        Double volume = object.getJsonNumber("volume") == null ? null : object.getJsonNumber("volume").doubleValue();
+        Double length = object.getJsonNumber("length") == null ? null : object.getJsonNumber("length").doubleValue();
+        Double startRadius = object.getJsonNumber("startRadius") == null ? null : object.getJsonNumber("startRadius").doubleValue();
+        Double endRadius = object.getJsonNumber("endRadius") == null ? null : object.getJsonNumber("endRadius").doubleValue();
+
+        return new Connectible(type, name, id, volume, length, startRadius, endRadius);
+    }
+
+    public JsonObjectBuilder toJson() {
         JsonObjectBuilder connectible = Json.createObjectBuilder();
         connectible.add("type", type.getTypeName());
         connectible.add("name", name);
@@ -52,10 +70,10 @@ public class Connectible {
         return connectible;
     }
 
-    public Node createXmlObject(Document doc) {
+    public Node toXml(Document doc) {
         Element connectible = doc.createElement(type.getTypeName());
         connectible.setAttribute("name", name);
-        connectible.setAttribute("id", id);
+        connectible.setAttribute("id", Integer.toString(id));
 
         if (volume != null) {
             connectible.setAttribute("volume", volume.toString());
@@ -74,5 +92,15 @@ public class Connectible {
         }
 
         return connectible;
+    }
+
+    @Override
+    public XMLSerializable addElement(String qName, Attributes attrs) throws SAXException {
+        throw new SAXException("A connectible element cannot have a child.");
+    }
+
+    @Override
+    public String getTagName(String tag) {
+        return type.getTypeName();
     }
 }
