@@ -9,7 +9,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-public class Organ {
+public class Organ implements XMLSerializable {
     private String name;
     private String id;
     private String systemId;

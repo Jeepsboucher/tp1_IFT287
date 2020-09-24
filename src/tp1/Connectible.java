@@ -10,7 +10,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import java.util.stream.*;
 
-public class Connectible {
+public class Connectible implements XMLSerializable {
     private ConnectibleType type;
     private String name;
     private String id;

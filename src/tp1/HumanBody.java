@@ -12,14 +12,14 @@ import javax.json.JsonValue;
 
 import org.w3c.dom.*;
 
-public class HumanBody {
+public class HumanBody implements XMLSerializable {
     private String bodyName;
     private String bodyId;
 
     private List<System> systems;
     private List<Organ> organs;
 
-    private HumanBody(String bodyName, String bodyId) {
+    public HumanBody(String bodyName, String bodyId) {
         this.bodyName = bodyName;
         this.bodyId = bodyId;
 
@@ -72,17 +72,17 @@ public class HumanBody {
         root.setAttribute("bodyID", bodyId);
         root.setAttribute("bodyName", bodyName);
 
-        Element systems = doc.createElement("Systems");
+        Element systemsXElement = doc.createElement("Systems");
         for (System system : systems) {
-            systems.appendChild(system.toXml(doc));
+            systemsXElement.appendChild(system.toXml(doc));
         }
-        root.appendChild(systems);
+        root.appendChild(systemsXElement);
 
-        Element organs = doc.createElement("Organs");
+        Element organsXElement = doc.createElement("Organs");
         for (Organ organ : organs) {
-            organs.appendChild(organ.toXml(doc));
+            organsXElement.appendChild(organ.toXml(doc));
         }
-        root.appendChild(organs);
+        root.appendChild(organsXElement);
 
         doc.appendChild(root);
 
