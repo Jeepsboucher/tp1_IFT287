@@ -26,22 +26,20 @@ public class Flow implements XMLSerializable {
     public Flow(String name, int id) {
         this.name = name;
         this.id = id;
-
-        connectibles = new ArrayList<>();
-        connections = new ArrayList<>();
     }
 
     public static Flow fromJson(JsonValue tree) {
         JsonObject object = (JsonObject) tree;
         Flow flow = new Flow(object.getString("name"), object.getInt("id"));
 
+
+        flow.connectibles = new ArrayList<>();
         JsonArray connectiblesJson = (JsonArray) object.get("Connectibles");
         for (JsonValue val : connectiblesJson) {
-            Connectible connectible = Connectible.fromJson(val);
-            if (connectible != null)
-                flow.connectibles.add(Connectible.fromJson(val));
+            flow.connectibles.add(Connectible.fromJson(val));
         }
 
+        flow.connections = new ArrayList<>();
         JsonArray connectionsJson = (JsonArray) object.get("Connections");
         for (JsonValue val : connectionsJson) {
             flow.connections.add(Connection.fromJson(val));

@@ -28,6 +28,7 @@ hs_err_pid*
 
 # Project file
 /.vscode
+/.vs
 
 # Libs that shouldn't be updated
 !jar/json-compilation.jar

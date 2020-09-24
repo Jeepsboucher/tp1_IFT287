@@ -131,14 +131,14 @@ public class HumanBody implements XMLSerializable {
                     throw new SAXException("Organs should be child of a Organs element.");
                 }
 
-                if (attrs == null || attrs.getLength() == 3 || attrs.getValue("name") == null || attrs.getValue("id") == null
+                if (attrs == null || attrs.getLength() != 3 || attrs.getValue("name") == null || attrs.getValue("id") == null
                     || attrs.getValue("systemID") == null) {
-                    throw new SAXException("Organ must have only a name, an id and type");        
+                    throw new SAXException("Organ must have only a name, an id and a systemID");        
                 }
 
                 name = attrs.getValue("name");
                 id = Integer.parseInt(attrs.getValue("id"));
-                int systemID = Integer.parseInt(attrs.getValue("id"));
+                int systemID = Integer.parseInt(attrs.getValue("systemID"));
 
                 Organ organ = new Organ(name, id, systemID);
                 organs.add(organ);

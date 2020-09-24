@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE MainBody SYSTEM "HumanBody.dtd">
 
-<MainBody 
-  xmlns="MainBody:element"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="MainBody:element HumanBody.xsd"
-  bodyName="DrHouse" bodyID="1"
->
+<MainBody bodyName="DrHouse" bodyID="1">
   <Systems>
     <!-- Type for system are :
       0 : Circulatory system
