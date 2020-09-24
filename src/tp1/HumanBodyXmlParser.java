@@ -62,23 +62,6 @@ public class HumanBodyXmlParser extends DefaultHandler {
         }
     }
 
-    /*
-     * private void addConnectible(String qName, Attributes attrs) { ConnectibleType
-     * type = Stream.of(ConnectibleType.values()).filter(connectibleType ->
-     * connectibleType.getTypeName().equals(qName)) .findFirst().get(); String name
-     * = attrs.getValue("name"); String id = attrs.getValue("id"); Double volume =
-     * attrs.getValue("volume") == null ? null :
-     * Double.parseDouble(attrs.getValue("volume")); Double length =
-     * attrs.getValue("length") == null ? null :
-     * Double.parseDouble(attrs.getValue("length")); Double startRadius =
-     * attrs.getValue("startRadius") == null ? null :
-     * Double.parseDouble(attrs.getValue("startRadius")); Double endRadius =
-     * attrs.getValue("endRadius") == null ? null :
-     * Double.parseDouble(attrs.getValue("endRadius"));
-     * humanBody.systems.get(systemCount).flows.get(flowCount).Connectibles.add( new
-     * Connectible(type, name, id, volume, length, startRadius, endRadius) ); }
-     */
-
     public void endElement(String namespaceURI, String lName, String qName) throws SAXException {
         if (elementStack.empty()) {
             throw new SAXException("Opening and closing tags mismatch.");

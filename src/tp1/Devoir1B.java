@@ -41,24 +41,21 @@ import org.w3c.dom.Document;
  */
 public class Devoir1B {
 
-    public static void main(String[] args)
-    {
-        System.out.println("Je suis dans B");
-        if (args.length < 2)
-        {
+    public static void main(String[] args) {
+        if (args.length < 2) {
             System.out.println("Usage: java tp1.Devoir1B <fichierJSON> <fichierXML>");
             return;
         }
-        
+
         String nomFichierJSON = args[0];
         String nomFichierXML = args[1];
-        
+
         System.out.println("Debut de la conversion du fichier " + nomFichierJSON + " vers le fichier " + nomFichierXML);
 
         // Votre code de conversion devrait aller ici
 
         try {
-            JsonReader reader = Json.createReader(new FileReader("humanBody.json"));
+            JsonReader reader = Json.createReader(new FileReader(nomFichierJSON));
             JsonStructure jsonStruct = reader.read();
 
             HumanBody humanBody = HumanBody.fromJson(jsonStruct);

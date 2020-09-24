@@ -50,17 +50,21 @@ public class HumanBody implements XMLSerializable {
         humanBodyJson.add("bodyName", bodyName);
         humanBodyJson.add("bodyID", bodyId);
 
-        JsonArrayBuilder jsonSystems = Json.createArrayBuilder();
-        for (System system : systems) {
-            jsonSystems.add(system.toJson());
+        if (systems != null) {
+            JsonArrayBuilder jsonSystems = Json.createArrayBuilder();
+            for (System system : systems) {
+                jsonSystems.add(system.toJson());
+            }
+            humanBodyJson.add("Systems", jsonSystems);
         }
-        humanBodyJson.add("Systems", jsonSystems);
 
-        JsonArrayBuilder jsonOrgans = Json.createArrayBuilder();
-        for (Organ organ : organs) {
-            jsonOrgans.add(organ.toJson());
+        if (organs != null) {
+            JsonArrayBuilder jsonOrgans = Json.createArrayBuilder();
+            for (Organ organ : organs) {
+                jsonOrgans.add(organ.toJson());
+            }
+            humanBodyJson.add("Organs", jsonOrgans);
         }
-        humanBodyJson.add("Organs", jsonOrgans);
 
         return humanBodyJson.build();
     }
@@ -71,16 +75,20 @@ public class HumanBody implements XMLSerializable {
         root.setAttribute("bodyName", bodyName);
 
         Element systemsXElement = doc.createElement("Systems");
-        for (System system : systems) {
-            systemsXElement.appendChild(system.toXml(doc));
+        if (systems != null) {
+            for (System system : systems) {
+                systemsXElement.appendChild(system.toXml(doc));
+            }
         }
         root.appendChild(systemsXElement);
 
         Element organsXElement = doc.createElement("Organs");
-        for (Organ organ : organs) {
-            organsXElement.appendChild(organ.toXml(doc));
+        if (organs != null) {
+            for (Organ organ : organs) {
+                organsXElement.appendChild(organ.toXml(doc));
+            }
+            root.appendChild(organsXElement);
         }
-        root.appendChild(organsXElement);
 
         doc.appendChild(root);
 
@@ -113,11 +121,11 @@ public class HumanBody implements XMLSerializable {
                     throw new SAXException("System should be child of a Systems element.");
                 }
 
-                if (attrs == null || attrs.getLength() != 3 || attrs.getValue("name") == null || attrs.getValue("id") == null
-                    || attrs.getValue("type") == null) {
+                if (attrs == null || attrs.getLength() != 3 || attrs.getValue("name") == null
+                        || attrs.getValue("id") == null || attrs.getValue("type") == null) {
                     throw new SAXException("System must have only a name, an id and type.");
                 }
-                
+
                 name = attrs.getValue("name");
                 id = Integer.parseInt(attrs.getValue("id"));
                 int type = Integer.parseInt(attrs.getValue("type"));
@@ -131,9 +139,9 @@ public class HumanBody implements XMLSerializable {
                     throw new SAXException("Organs should be child of a Organs element.");
                 }
 
-                if (attrs == null || attrs.getLength() != 3 || attrs.getValue("name") == null || attrs.getValue("id") == null
-                    || attrs.getValue("systemID") == null) {
-                    throw new SAXException("Organ must have only a name, an id and a systemID");        
+                if (attrs == null || attrs.getLength() != 3 || attrs.getValue("name") == null
+                        || attrs.getValue("id") == null || attrs.getValue("systemID") == null) {
+                    throw new SAXException("Organ must have only a name, an id and a systemID");
                 }
 
                 name = attrs.getValue("name");

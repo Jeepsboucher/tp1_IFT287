@@ -32,7 +32,6 @@ public class Flow implements XMLSerializable {
         JsonObject object = (JsonObject) tree;
         Flow flow = new Flow(object.getString("name"), object.getInt("id"));
 
-
         flow.connectibles = new ArrayList<>();
         JsonArray connectiblesJson = (JsonArray) object.get("Connectibles");
         for (JsonValue val : connectiblesJson) {
@@ -54,14 +53,18 @@ public class Flow implements XMLSerializable {
         flowJson.add("id", id);
 
         JsonArrayBuilder jsonConnectibles = Json.createArrayBuilder();
-        for (Connectible connectible : connectibles) {
-            jsonConnectibles.add(connectible.toJson());
+        if (connectibles != null) {
+            for (Connectible connectible : connectibles) {
+                jsonConnectibles.add(connectible.toJson());
+            }
         }
         flowJson.add("Connectibles", jsonConnectibles);
 
         JsonArrayBuilder jsonConnections = Json.createArrayBuilder();
-        for (Connection connection : connections) {
-            jsonConnections.add(connection.toJson());
+        if (connections != null) {
+            for (Connection connection : connections) {
+                jsonConnections.add(connection.toJson());
+            }
         }
         flowJson.add("Connections", jsonConnections);
 
@@ -74,14 +77,18 @@ public class Flow implements XMLSerializable {
         system.setAttribute("id", Integer.toString(id));
 
         Element connectible = doc.createElement("Connectible");
-        for (Connectible c : connectibles) {
-            connectible.appendChild(c.toXml(doc));
+        if (connectibles != null) {
+            for (Connectible c : connectibles) {
+                connectible.appendChild(c.toXml(doc));
+            }
         }
         system.appendChild(connectible);
 
         Element connectionsXElement = doc.createElement("Connections");
-        for (Connection c : connections) {
-            connectionsXElement.appendChild(c.toXml(doc));
+        if (connections != null) {
+            for (Connection c : connections) {
+                connectionsXElement.appendChild(c.toXml(doc));
+            }
         }
         system.appendChild(connectionsXElement);
 

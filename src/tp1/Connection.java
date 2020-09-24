@@ -72,7 +72,7 @@ public class Connection implements XMLSerializable {
         switch (qName) {
             case "to":
                 if (attrs == null || attrs.getLength() != 1 || attrs.getValue("id") == null) {
-                    throw new SAXException("Every \"to\" tag must have an id.");
+                    throw new SAXException("Every \"to\" element must have an id.");
                 }
 
                 int id = Integer.parseInt(attrs.getValue("id"));

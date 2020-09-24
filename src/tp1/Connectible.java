@@ -39,8 +39,10 @@ public class Connectible implements XMLSerializable {
         Integer id = object.getInt("id");
         Double volume = object.getJsonNumber("volume") == null ? null : object.getJsonNumber("volume").doubleValue();
         Double length = object.getJsonNumber("length") == null ? null : object.getJsonNumber("length").doubleValue();
-        Double startRadius = object.getJsonNumber("startRadius") == null ? null : object.getJsonNumber("startRadius").doubleValue();
-        Double endRadius = object.getJsonNumber("endRadius") == null ? null : object.getJsonNumber("endRadius").doubleValue();
+        Double startRadius = object.getJsonNumber("startRadius") == null ? null
+                : object.getJsonNumber("startRadius").doubleValue();
+        Double endRadius = object.getJsonNumber("endRadius") == null ? null
+                : object.getJsonNumber("endRadius").doubleValue();
 
         return new Connectible(type, name, id, volume, length, startRadius, endRadius);
     }

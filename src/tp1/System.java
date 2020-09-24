@@ -53,7 +53,6 @@ public class System implements XMLSerializable {
         for (Flow flow : flows) {
             jsonFlows.add(flow.toJson());
         }
-
         systemJson.add("Flows", jsonFlows);
 
         return systemJson;
@@ -65,8 +64,10 @@ public class System implements XMLSerializable {
         system.setAttribute("id", Integer.toString(id));
         system.setAttribute("type", Integer.toString(type));
 
-        for (Flow flow : flows) {
-            system.appendChild(flow.toXml(doc));
+        if (flows != null) {
+            for (Flow flow : flows) {
+                system.appendChild(flow.toXml(doc));
+            }
         }
 
         return system;
