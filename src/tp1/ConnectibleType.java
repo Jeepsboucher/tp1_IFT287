@@ -23,10 +23,19 @@ public enum ConnectibleType {
     private final String typeName;
     
     private ConnectibleType(String typeName) {
-      this.typeName = typeName;
+        this.typeName = typeName;
     }
 
     public String getTypeName() {
-      return this.typeName;
+        return this.typeName;
+    }
+
+    public static ConnectibleType fromString(String string) {
+      for (ConnectibleType connectibleType : ConnectibleType.values()) {
+        if (connectibleType.typeName.equals(string)) {
+          return connectibleType;
+        }
+      }
+      return null;
     }
 }

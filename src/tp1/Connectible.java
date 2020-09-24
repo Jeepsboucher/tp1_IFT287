@@ -8,19 +8,20 @@ import javax.json.JsonValue;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import java.util.stream.*;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
 
 public class Connectible implements XMLSerializable {
     private ConnectibleType type;
     private String name;
-    private String id;
+    private int id;
     private Double volume;
     private Double length;
     private Double startRadius;
     private Double endRadius;
-    
-    private Connectible(ConnectibleType type, String name, String id, Double volume, Double length, Double startRadius,
-                        Double endRadius) {
+
+    public Connectible(ConnectibleType type, String name, int id, Double volume, Double length, Double startRadius,
+            Double endRadius) {
         this.type = type;
         this.name = name;
         this.id = id;
@@ -33,10 +34,9 @@ public class Connectible implements XMLSerializable {
     public static Connectible fromJson(JsonValue tree) {
         JsonObject object = (JsonObject) tree;
         String typeName = object.getString("type");
-        ConnectibleType type = Stream.of(ConnectibleType.values()).filter(connectibleType -> connectibleType.getTypeName().equals(typeName))
-                                                                  .findFirst().get();
+        ConnectibleType type = ConnectibleType.fromString(typeName);
         String name = object.getString("name");
-        String id = object.getString("id");
+        Integer id = object.getInt("id");
         Double volume = object.isNull("volume") ? null : object.getJsonNumber("volume").doubleValue();
         Double length = object.isNull("length") ? null : object.getJsonNumber("length").doubleValue();
         Double startRadius = object.isNull("startRadius") ? null : object.getJsonNumber("startRadius").doubleValue();
@@ -73,7 +73,7 @@ public class Connectible implements XMLSerializable {
     public Node toXml(Document doc) {
         Element connectible = doc.createElement(type.getTypeName());
         connectible.setAttribute("name", name);
-        connectible.setAttribute("id", id);
+        connectible.setAttribute("id", Integer.toString(id));
 
         if (volume != null) {
             connectible.setAttribute("volume", volume.toString());
@@ -92,5 +92,15 @@ public class Connectible implements XMLSerializable {
         }
 
         return connectible;
+    }
+
+    @Override
+    public XMLSerializable addElement(String qName, Attributes attrs) throws SAXException {
+        throw new SAXException("A connectible element cannot have a child.");
+    }
+
+    @Override
+    public String getTagName(String tag) {
+        return type.getTypeName();
     }
 }

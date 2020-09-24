@@ -8,7 +8,6 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.util.Stack;
-import java.util.stream.*;
 
 public class HumanBodyXmlParser extends DefaultHandler {
     private Stack<XMLSerializable> elementStack;
@@ -46,7 +45,7 @@ public class HumanBodyXmlParser extends DefaultHandler {
             }
 
             String bodyName = attrs.getValue("bodyName");
-            String bodyID = attrs.getValue("bodyID");
+            int bodyID = Integer.parseInt(attrs.getValue("bodyID"));
 
             HumanBody humanBody = new HumanBody(bodyName, bodyID);
             elementStack.push(humanBody);

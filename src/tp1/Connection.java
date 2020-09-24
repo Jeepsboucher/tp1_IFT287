@@ -14,20 +14,22 @@ import javax.json.JsonValue;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
 
 public class Connection implements XMLSerializable {
-    private String id;
+    private int id;
 
     private List<Integer> toList;
 
-    private Connection(String id) {
+    public Connection(int id) {
         this.id = id;
         toList = new ArrayList<>();
     }
 
-	public static Connection fromJson(JsonValue tree) {
+    public static Connection fromJson(JsonValue tree) {
         JsonObject object = (JsonObject) tree;
-        Connection connection = new Connection(object.getString("id"));
+        Connection connection = new Connection(object.getInt("id"));
 
         JsonArray toListJson = object.getJsonArray("to");
         for (JsonValue val : toListJson) {
@@ -36,7 +38,7 @@ public class Connection implements XMLSerializable {
         }
 
         return connection;
-	}
+    }
 
     public JsonObjectBuilder toJson() {
         JsonObjectBuilder connectionJson = Json.createObjectBuilder();
@@ -50,9 +52,9 @@ public class Connection implements XMLSerializable {
         return connectionJson;
     }
 
-	public Node toXml(Document doc) {
-		Element connection = doc.createElement("Connection");
-        connection.setAttribute("id", id);
+    public Node toXml(Document doc) {
+        Element connection = doc.createElement("Connection");
+        connection.setAttribute("id", Integer.toString(id));
 
         for (Integer to : toList) {
             Element t = doc.createElement("to");
@@ -61,5 +63,28 @@ public class Connection implements XMLSerializable {
         }
 
         return connection;
-	}
+    }
+
+    @Override
+    public XMLSerializable addElement(String qName, Attributes attrs) throws SAXException {
+        XMLSerializable child = null;
+
+        switch (qName) {
+            case "to":
+                if (attrs == null || attrs.getLength() != 1 || attrs.getValue("id") == null) {
+                    throw new SAXException("Every \"to\" tag must have an id.");
+                }
+
+                int id = Integer.parseInt(attrs.getValue("id"));
+                toList.add(id);
+                break;
+        }
+
+        return child;
+    }
+
+    @Override
+    public String getTagName(String tag) {
+        return "Connection";
+    }
 }

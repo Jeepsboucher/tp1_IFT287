@@ -1,182 +1,118 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-            targetNamespace="MainBody:element"
-            xmlns="MainBody:element"
-            elementFormDefault="qualified">
+<?xml version="1.0"?>
+<xs:schema
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  targetNamespace="urn:ift287:humanbody:element"
+  xmlns="urn:ift287:humanbody:element"
+  elementFormDefault="qualified"
+>
 
+<xs:element name="MainBody">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element name="Systems">
+        <xs:complexType>
+          <xs:sequence maxOccurs="unbounded">
+            <xs:element name="System">
+              <xs:complexType>
+                <xs:sequence maxOccurs="unbounded">
+                  <xs:element name="Flow">
+                    <xs:complexType>
+                      <xs:sequence>
+                        <xs:element name="Connectible">
+                          <xs:complexType>
+                            <xs:choice maxOccurs="unbounded">
+                              <xs:element name="Atrium" type="ConnectibleAttr" />
+                              <xs:element name="Ventricle" type="ConnectibleAttr" />
+                              <xs:element name="Artery" type="ConnectibleAttr" />
+                              <xs:element name="Vein" type="ConnectibleAttr" />
+                              <xs:element name="Capillaries" type="ConnectibleAttr" />
+                              <xs:element name="Nose" type="ConnectibleAttr" />
+                              <xs:element name="AirConnectible" type="ConnectibleAttr" />
+                              <xs:element name="Alveoli" type="ConnectibleAttr" />
+                              <xs:element name="DigestiveTract" type="ConnectibleAttr" />
+                              <xs:element name="StomachTract" type="ConnectibleAttr" />
+                              <xs:element name="DuodenumTract" type="ConnectibleAttr" />
+                              <xs:element name="RectumTract" type="ConnectibleAttr" />
+                              <xs:element name="BiDuct" type="ConnectibleAttr" />
+                              <xs:element name="Duct" type="ConnectibleAttr" />
+                              <xs:element name="DuctOverflowableJunction" type="ConnectibleAttr" />
+                              <xs:element name="DeversingDuct" type="ConnectibleAttr" />
+                              <xs:element name="InnerGallbladder" type="ConnectibleAttr" />
+                              <xs:element name="SalivaryDuct" type="ConnectibleAttr" />
+                            </xs:choice>
+                          </xs:complexType>
+                        </xs:element>
+                        <xs:element name="Connections">
+                          <xs:complexType>
+                            <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                              <xs:element name="Connection">
+                                <xs:complexType>
+                                  <xs:sequence maxOccurs="unbounded">
+                                    <xs:element name="to">
+                                      <xs:complexType>
+                                        <xs:attribute name="id" type="xs:nonNegativeInteger" use="required" />
+                                      </xs:complexType>
+                                    </xs:element>
+                                  </xs:sequence>
+                                  <xs:attribute name="id" type="xs:nonNegativeInteger" use="required" />
+                                </xs:complexType>
+                              </xs:element>
+                            </xs:sequence>
+                          </xs:complexType>
+                        </xs:element>
+                      </xs:sequence>
+                      <xs:attribute name="id" type="xs:nonNegativeInteger" use="required" />
+                      <xs:attribute name="name" type="xs:string" use="required" />
+                    </xs:complexType>
+                  </xs:element>
+                </xs:sequence>
+                <xs:attribute name="name" type="xs:string" use="required" />
+                <xs:attribute name="id" type="xs:nonNegativeInteger" use="required" />
+                <xs:attribute name="type" use="required">
+                  <xs:simpleType>
+                    <xs:restriction base="xs:nonNegativeInteger">
+                      <xs:enumeration value="0" />
+                      <xs:enumeration value="1" />
+                      <xs:enumeration value="2" />
+                      <xs:enumeration value="3" />
+                      <xs:enumeration value="4" />
+                      <xs:enumeration value="5" />
+                      <xs:enumeration value="6" />
+                      <xs:enumeration value="7" />
+                    </xs:restriction>
+                  </xs:simpleType>
+                </xs:attribute>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Organs">
+        <xs:complexType>
+          <xs:sequence maxOccurs="unbounded">
+            <xs:element name="Organ">
+              <xs:complexType>
+                <xs:attribute name="name" type="xs:string" use="required" />
+                <xs:attribute name="id" type="xs:nonNegativeInteger" use="required" />
+                <xs:attribute name="systemID" type="xs:nonNegativeInteger" use="required" />
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="bodyName" type="xs:string" use="required" />
+    <xs:attribute name="bodyID" type="xs:nonNegativeInteger" use="required" />
+  </xs:complexType>
+</xs:element>
 
-  <xsd:element name="MainBody" type="MainBody"/>
-    <xsd:complexType name="MainBody">
-        <xsd:sequence>
-            <xsd:element name="Systems" type="Systems"/>
-            <xsd:element name="Organs" type="Organs"/>
-        </xsd:sequence>
-        <xsd:attribute name="bodyName" type="xsd:string" use="required"/>
-        <xsd:attribute name="bodyID" type="xsd:string" use="required"/>
-    </xsd:complexType>
-    <xsd:complexType name="Systems">
-        <xsd:sequence minOccurs="1" maxOccurs="unbounded">
-            <xsd:element name="System" type="System"/>
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:complexType name="System">
-        <xsd:sequence minOccurs="1" maxOccurs="unbounded">
-            <xsd:element name="Flow" type="Flow"/>
-        </xsd:sequence>
-        <xsd:attribute name="name" type="xsd:string" use="required"/>
-        <xsd:attribute name="id" type="xsd:string" use="required"/>
-        <xsd:attribute name="type" type="xsd:string" use="required"/>
-    </xsd:complexType>
-    <xsd:complexType name="Flow">
-        <xsd:sequence>
-            <xsd:element name="Connectible" type="Connectible"/>
-            <xsd:element name="Connections" type="Connections"/>
-        </xsd:sequence>
-        <xsd:attribute name="id" type="xsd:string" use="required"/>
-        <xsd:attribute name="name" type="xsd:string" use="required"/>
-    </xsd:complexType>
-    <xsd:complexType name="Connectible">
-        <xsd:choice minOccurs="1" maxOccurs="unbounded">
-            <xsd:element name="Atrium" type="Atrium"/>
-            <xsd:element name="Ventricle" type="Ventricle"/>
-            <xsd:element name="Artery" type="Artery"/>
-            <xsd:element name="Vein" type="Vein"/>
-            <xsd:element name="Capillaries" type="Capillaries"/>
-            <xsd:element name="Nose" type="Nose"/>
-            <xsd:element name="AirConnectible" type="AirConnectible"/>
-            <xsd:element name="Alveoli" type="Alveoli"/>
-            <xsd:element name="DigestiveTract" type="DigestiveTract"/>
-            <xsd:element name="StomachTract" type="StomachTract"/>
-            <xsd:element name="DuodenumTract" type="DuodenumTract"/>
-            <xsd:element name="RectumTract" type="RectumTract"/>
-            <xsd:element name="BiDuct" type="BiDuct"/>
-            <xsd:element name="Duct" type="Duct"/>
-            <xsd:element name="DuctOverflowableJunction" type="DuctOverflowableJunction"/>
-            <xsd:element name="DeversingDuct" type="DeversingDuct"/>
-            <xsd:element name="InnerGallbladder" type="InnerGallbladder"/>
-            <xsd:element name="SalivaryDuct" type="SalivaryDuct"/>
-        </xsd:choice>
-    </xsd:complexType>
-    <xsd:complexType name="Atrium">
-        <xsd:attribute name="name" type="xsd:string" use="required"/>
-        <xsd:attribute name="id" type="xsd:string" use="required"/>
-        <xsd:attribute name="volume" type="xsd:decimal" use="required"/>
-    </xsd:complexType>
-    <xsd:complexType name="Ventricle">
-        <xsd:attribute name="name" type="xsd:string" use="required"/>
-        <xsd:attribute name="id" type="xsd:string" use="required"/>
-        <xsd:attribute name="volume" type="xsd:decimal" use="required"/>
-    </xsd:complexType>
-    <xsd:complexType name="Artery">
-        <xsd:attribute name="name" type="xsd:string" use="required"/>
-        <xsd:attribute name="id" type="xsd:string" use="required"/>
-        <xsd:attribute name="startRadius" type="xsd:decimal" use="required"/>
-        <xsd:attribute name="endRadius" type="xsd:decimal" use="optional"/>
-        <xsd:attribute name="length" type="xsd:decimal" use="required"/>
-    </xsd:complexType>
-    <xsd:complexType name="Vein">
-        <xsd:attribute name="name" type="xsd:string" use="required"/>
-        <xsd:attribute name="id" type="xsd:string" use="required"/>
-        <xsd:attribute name="startRadius" type="xsd:decimal" use="required"/>
-        <xsd:attribute name="endRadius" type="xsd:decimal" use="optional"/>
-        <xsd:attribute name="length" type="xsd:decimal" use="required"/>
-    </xsd:complexType>
-    <xsd:complexType name="Capillaries">
-        <xsd:attribute name="name" type="xsd:string" use="required"/>
-        <xsd:attribute name="id" type="xsd:string" use="required"/>
-        <xsd:attribute name="volume" type="xsd:decimal" use="required"/>
-        <xsd:attribute name="length" type="xsd:decimal" use="optional"/>
-    </xsd:complexType>
-    <xsd:complexType name="Nose">
-        <xsd:attribute name="name" type="xsd:string" use="required"/>
-        <xsd:attribute name="id" type="xsd:string" use="required"/>
-    </xsd:complexType>
-    <xsd:complexType name="AirConnectible">
-        <xsd:attribute name="name" type="xsd:string" use="required"/>
-        <xsd:attribute name="id" type="xsd:string" use="required"/>
-        <xsd:attribute name="startRadius" type="xsd:decimal" use="required"/>
-        <xsd:attribute name="endRadius" type="xsd:decimal" use="optional"/>
-        <xsd:attribute name="length" type="xsd:decimal" use="required"/>
-    </xsd:complexType>
-    <xsd:complexType name="Alveoli">
-        <xsd:attribute name="name" type="xsd:string" use="required"/>
-        <xsd:attribute name="id" type="xsd:string" use="required"/>
-        <xsd:attribute name="volume" type="xsd:decimal" use="required"/>
-    </xsd:complexType>
-    <xsd:complexType name="DigestiveTract">
-        <xsd:attribute name="name" type="xsd:string" use="required"/>
-        <xsd:attribute name="id" type="xsd:string" use="required"/>
-        <xsd:attribute name="length" type="xsd:decimal" use="optional"/>
-        <xsd:attribute name="volume" type="xsd:decimal" use="required"/>
-    </xsd:complexType>
-    <xsd:complexType name="StomachTract">
-        <xsd:attribute name="name" type="xsd:string" use="required"/>
-        <xsd:attribute name="id" type="xsd:string" use="required"/>
-        <xsd:attribute name="length" type="xsd:decimal" use="optional"/>
-        <xsd:attribute name="volume" type="xsd:decimal" use="required"/>
-    </xsd:complexType>
-    <xsd:complexType name="DuodenumTract">
-        <xsd:attribute name="name" type="xsd:string" use="required"/>
-        <xsd:attribute name="id" type="xsd:string" use="required"/>
-        <xsd:attribute name="length" type="xsd:decimal" use="optional"/>
-        <xsd:attribute name="volume" type="xsd:decimal" use="required"/>
-    </xsd:complexType>
-    <xsd:complexType name="RectumTract">
-        <xsd:attribute name="name" type="xsd:string" use="required"/>
-        <xsd:attribute name="id" type="xsd:string" use="required"/>
-        <xsd:attribute name="length" type="xsd:decimal" use="optional"/>
-        <xsd:attribute name="volume" type="xsd:decimal" use="required"/>
-    </xsd:complexType>
-    <xsd:complexType name="BiDuct">
-        <xsd:attribute name="name" type="xsd:string" use="required"/>
-        <xsd:attribute name="id" type="xsd:string" use="required"/>
-    </xsd:complexType>
-    <xsd:complexType name="Duct">
-        <xsd:attribute name="name" type="xsd:string" use="required"/>
-        <xsd:attribute name="id" type="xsd:string" use="required"/>
-    </xsd:complexType>
-    <xsd:complexType name="DuctOverflowableJunction">
-        <xsd:attribute name="name" type="xsd:string" use="required"/>
-        <xsd:attribute name="id" type="xsd:string" use="required"/>
-    </xsd:complexType>
-    <xsd:complexType name="DeversingDuct">
-        <xsd:attribute name="name" type="xsd:string" use="required"/>
-        <xsd:attribute name="id" type="xsd:string" use="required"/>
-    </xsd:complexType>
-    <xsd:complexType name="InnerGallbladder">
-        <xsd:attribute name="name" type="xsd:string" use="required"/>
-        <xsd:attribute name="id" type="xsd:string" use="required"/>
-    </xsd:complexType>
-    <xsd:complexType name="SalivaryDuct">
-        <xsd:attribute name="name" type="xsd:string" use="required"/>
-        <xsd:attribute name="id" type="xsd:string" use="required"/>
-        <xsd:attribute name="length" type="xsd:decimal" use="optional"/>
-        <xsd:attribute name="volume" type="xsd:decimal" use="required"/>
-    </xsd:complexType>
-    <xsd:complexType name="Connections">
-        <xsd:sequence minOccurs="0" maxOccurs="unbounded">
-            <xsd:element name="Connection" type="Connection"/>
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:complexType name="Connection">
-        <xsd:sequence minOccurs="1" maxOccurs="unbounded">
-            <xsd:element name="to" type="to"/>
-        </xsd:sequence>
-        <xsd:attribute name="id" type="xsd:string" use="required"/>
-    </xsd:complexType>
-    <xsd:complexType name="to">
-        <xsd:attribute name="id" type="xsd:string" use="required"/>
-    </xsd:complexType>
+<xs:complexType name="ConnectibleAttr">
+  <xs:attribute name="name" type="xs:string" use="required" />
+  <xs:attribute name="id" type="xs:nonNegativeInteger" use="required" />
+  <xs:attribute name="volume" type="xs:float" use="optional" />
+  <xs:attribute name="length" type="xs:float" use="optional" />
+  <xs:attribute name="startRadius" type="xs:float" use="optional" />
+  <xs:attribute name="endRadius" type="xs:float" use="optional" />
+</xs:complexType>
 
-
-    <xsd:complexType name="Organs">
-        <xsd:sequence minOccurs="1" maxOccurs="12">
-            <xsd:element name="Organ" type="Organ"/>
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:complexType name="Organ">
-        <xsd:attribute name="name" type="xsd:string" use="required"/>
-        <xsd:attribute name="id" type="xsd:string" use="required"/>
-        <xsd:attribute name="systemID" type="xsd:string" use="required"/>
-    </xsd:complexType>
-</xsd:schema>
+</xs:schema>

@@ -8,13 +8,15 @@ import javax.json.JsonValue;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
 
 public class Organ implements XMLSerializable {
     private String name;
-    private String id;
-    private String systemId;
+    private int id;
+    private int systemId;
 
-    private Organ(String name, String id, String systemId) {
+    public Organ(String name, int id, int systemId) {
         this.name = name;
         this.id = id;
         this.systemId = systemId;
@@ -22,11 +24,7 @@ public class Organ implements XMLSerializable {
 
     public static Organ fromJson(JsonValue tree) {
         JsonObject object = (JsonObject) tree;
-        return new Organ(
-            object.getString("name"),
-            object.getString("id"),
-            object.getString("systemID")
-        );
+        return new Organ(object.getString("name"), object.getInt("id"), object.getInt("systemID"));
     }
 
     public JsonObjectBuilder toJson() {
@@ -37,12 +35,22 @@ public class Organ implements XMLSerializable {
         return systemJson;
     }
 
-	public Node toXml(Document doc) {
-		Element system = doc.createElement("Organ");
+    public Node toXml(Document doc) {
+        Element system = doc.createElement("Organ");
         system.setAttribute("name", name);
-        system.setAttribute("id", id);
-        system.setAttribute("systemID", systemId);
+        system.setAttribute("id", Integer.toString(id));
+        system.setAttribute("systemID", Integer.toString(systemId));
 
         return system;
-	}
+    }
+
+    @Override
+    public XMLSerializable addElement(String qName, Attributes attrs) throws SAXException {
+        throw new SAXException("An organ element cannot have a child.");
+    }
+
+    @Override
+    public String getTagName(String tag) {
+        return "Organ";
+    }
 }

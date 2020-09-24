@@ -13,15 +13,17 @@ import javax.json.JsonValue;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
 
 public class System implements XMLSerializable {
     private String name;
-    private String id;
-    private String type;
+    private int id;
+    private int type;
 
     private List<Flow> flows;
 
-    private System(String name, String id, String type) {
+    public System(String name, int id, int type) {
         this.name = name;
         this.id = id;
         this.type = type;
@@ -31,11 +33,7 @@ public class System implements XMLSerializable {
 
     public static System fromJson(JsonValue tree) {
         JsonObject object = (JsonObject) tree;
-        System system = new System(
-            object.getString("name"),
-            object.getString("id"),
-            object.getString("type")
-        );
+        System system = new System(object.getString("name"), object.getInt("id"), object.getInt("type"));
 
         JsonArray flows = (JsonArray) object.get("Flows");
         for (JsonValue val : flows) {
@@ -50,25 +48,56 @@ public class System implements XMLSerializable {
         systemJson.add("name", name);
         systemJson.add("id", id);
         systemJson.add("type", type);
+
         JsonArrayBuilder jsonFlows = Json.createArrayBuilder();
         for (Flow flow : flows) {
             jsonFlows.add(flow.toJson());
         }
+
         systemJson.add("Flows", jsonFlows);
+
         return systemJson;
     }
 
-	public Node toXml(Document doc) {
-		Element system = doc.createElement("System");
+    public Node toXml(Document doc) {
+        Element system = doc.createElement("System");
         system.setAttribute("name", name);
-        system.setAttribute("id", id);
-        system.setAttribute("type", type);
+        system.setAttribute("id", Integer.toString(id));
+        system.setAttribute("type", Integer.toString(type));
 
         for (Flow flow : flows) {
             system.appendChild(flow.toXml(doc));
         }
 
         return system;
-	}
+    }
+
+    @Override
+    public XMLSerializable addElement(String qName, Attributes attrs) throws SAXException {
+        XMLSerializable child = null;
+        switch (qName) {
+            case "Flow":
+                if (attrs == null || attrs.getLength() != 2 || attrs.getValue("id") == null
+                        || attrs.getValue("name") == null) {
+                    throw new SAXException("Flow must have only an id and a name.");
+                }
+
+                int id = Integer.parseInt(attrs.getValue("id"));
+                String name = attrs.getValue("name");
+
+                Flow flow = new Flow(name, id);
+                flows.add(flow);
+                child = flow;
+                break;
+            default:
+                throw new SAXException("Unknown tag : " + qName);
+        }
+        return child;
+    }
+
+    @Override
+    public String getTagName(String tag) {
+        return "System";
+    }
 
 }
